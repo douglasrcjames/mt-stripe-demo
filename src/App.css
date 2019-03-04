@@ -1,12 +1,4 @@
-.m-container {
-  width: 50%;
-  padding:5%;
-}
-
-.box {
-  border-top-style: dotted;
-  border-right-style: solid;
-  border-bottom-style: dotted;
-  border-left-style: solid;
-  padding :5%;
+.checkout {
+  padding: 5%;
+  margin: auto;
 }

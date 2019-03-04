@@ -1,17 +1,19 @@
-import React, { Component } from 'react';
+import React, {Component} from 'react';
+import {Elements, StripeProvider} from 'react-stripe-elements';
+import CheckoutForm from './components/CheckoutForm';
 import './App.css';
-
-import MyStoreCheckout from './components/MyStoreCheckout'
-import {StripeProvider} from 'react-stripe-elements';
-
+// Example from: https://stripe.com/docs/recipes/elements-react#setup
 class App extends Component {
   render() {
     return (
-      <div className="m-container">
-        <StripeProvider apiKey="pk_test_JhKEZAELWzRIbo8ETppaJFjc">
-          <MyStoreCheckout />
-        </StripeProvider>
-      </div>
+      <StripeProvider apiKey="pk_test_JhKEZAELWzRIbo8ETppaJFjc">
+        <div className="example">
+          <h1>React Stripe Elements Example</h1>
+          <Elements>
+            <CheckoutForm />
+          </Elements>
+        </div>
+      </StripeProvider>
     );
   }
 }

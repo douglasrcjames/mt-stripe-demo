@@ -1,12 +1,13 @@
 {
-  "name": "mt-stripe-demo",
+  "name": "elements-example",
   "version": "0.1.0",
   "private": true,
   "dependencies": {
+    "body-parser": "^1.18.3",
+    "express": "^4.16.4",
     "react": "^16.8.3",
     "react-dom": "^16.8.3",
     "react-scripts": "2.1.5",
-    "react-stripe-checkout": "^2.6.3",
     "react-stripe-elements": "^2.0.3",
     "stripe": "^6.25.1"
   },
@@ -24,5 +25,6 @@
     "not dead",
     "not ie <= 11",
     "not op_mini all"
-  ]
+  ],
+  "proxy": "http://localhost:9000"
 }

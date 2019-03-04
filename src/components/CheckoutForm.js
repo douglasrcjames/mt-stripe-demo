@@ -1,38 +1,87 @@
-// CheckoutForm.js
-import React from 'react';
-import {injectStripe} from 'react-stripe-elements';
+import React, {Component} from 'react';
+import {CardNumberElement,CardExpiryElement, CardCVCElement, injectStripe} from 'react-stripe-elements';
 
-import CardSection from './CardSection';
+class CheckoutForm extends Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+        complete: '',
+        name: "Douglas James",
+        addr1: "814 Vine Street",
+        city: "San Jose",
+        addrState: "CA",
+        zip: "95110",
+        country: "USA"
+    }
+    this.messageCharge = this.messageCharge.bind(this);
+    this.callCharge = this.callCharge.bind(this);
+    
+  }
 
-class CheckoutForm extends React.Component {
-  handleSubmit = (ev) => {
-    // We don't want to let default form submission happen here, which would refresh the page.
-    ev.preventDefault();
-
-    // Within the context of `Elements`, this call to createToken knows which Element to
-    // tokenize, since there's only one in this group.
-    this.props.stripe.createToken({name: 'Jenny Rosen'}).then(({token}) => {
-      console.log('Received Stripe token:', token);
+  async messageCharge(ev) {
+    //Tokenizing
+    let {token} = await this.props.stripe.createToken({
+        name: this.state.name,
+        address_line1: this.state.addr1,
+        address_city: this.state.city,
+        address_state: this.state.addrState,
+        address_zip: this.state.zip,
+        address_country: this.state.country,
+        currency: 'usd',
     });
 
-    // However, this line of code will do the same thing:
-    //
-    // this.props.stripe.createToken({type: 'card', name: 'Jenny Rosen'});
+    let response = await fetch("/charge-message", {
+        method: "POST",
+        headers: {"Content-Type": "text/plain"},
+        body: token.id
+    });
 
-    // You can also use createSource to create Sources. See our Sources
-    // documentation for more: https://stripe.com/docs/stripe-js/reference#stripe-create-source
-    //
-    // this.props.stripe.createSource({type: 'card', owner: {
-    //   name: 'Jenny Rosen'
-    // }});
-  };
+    if (response.ok){
+        this.setState({
+            complete: 'message-charge'
+        });
+    } 
+  }
+
+  async callCharge(ev) {
+    //Tokenizing
+    let {token} = await this.props.stripe.createToken({
+        name: this.state.name,
+        address_line1: this.state.addr1,
+        address_city: this.state.city,
+        address_state: this.state.addrState,
+        address_zip: this.state.zip,
+        address_country: this.state.country,
+        currency: 'usd',
+    });
+
+    let response = await fetch("/charge-call", {
+        method: "POST",
+        headers: {"Content-Type": "text/plain"},
+        body: token.id
+    });
+
+    if (response.ok){
+        this.setState({
+            complete: 'call-charge'
+        });
+    } 
+  }
 
   render() {
     return (
-      <form onSubmit={this.handleSubmit}>
-        <CardSection />
-        <button>Submit</button>
-      </form>
+      <div className="checkout">
+        <p>Fill in your card data</p>
+        <CardNumberElement/>
+        <CardExpiryElement/>
+        <CardCVCElement/>
+        <br/>
+        <button onClick={this.messageCharge}>Message Charge</button>
+        <button onClick={this.callCharge}>Call Charge</button>
+        <br/>
+        <br/>
+        Current charge: {this.state.complete}
+      </div>
     );
   }
 }
